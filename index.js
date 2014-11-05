@@ -21,6 +21,7 @@ function Parser(mongoClient, options)
 			access_token: '',
 			access_token_secret: '',
 		},
+		entries: [],
 		match : '',	// string to search tweet stream for
 		state_collection : 'worker_state',
 		state_id : 'last_tweet',
@@ -72,7 +73,7 @@ Parser.prototype.loadTweets = function(lastOffset)
 
 	twit.get('search/tweets', { q: options.match, count: this.options.batch_size, since_id: (lastOffset + 1) }, function(err, data, response) {
     	if (err) throw err;
-
+    	var that = this;
     	console.log('Found ' + data.statuses.length + '.');
 
     	var coll = db.collection(options.storage_collection);
@@ -101,11 +102,18 @@ Parser.prototype.loadTweets = function(lastOffset)
 	    		}
 
 
+		      var vote = null;
+		      that.options.entries.forEach(function(entry){
+		        if(status.text.indexOf(entry) !== -1) {
+		          vote = entry;
+		        }
+		      });
 	    		var tweet = {
             _id : status.id_str,
 	    			id_str: status.id_str,
             created_at : parseTwitterDate(status.created_at),
             text : status.text,
+            vote: vote,
 	    			user : {
 	    				id : u.id,
 	    				name : u.name,
