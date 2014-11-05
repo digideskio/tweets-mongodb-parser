@@ -73,7 +73,6 @@ Parser.prototype.loadTweets = function(lastOffset)
 
 	twit.get('search/tweets', { q: options.match, count: this.options.batch_size, since_id: (lastOffset + 1) }, function(err, data, response) {
     	if (err) throw err;
-    	var that = this;
     	console.log('Found ' + data.statuses.length + '.');
 
     	var coll = db.collection(options.storage_collection);
@@ -103,7 +102,7 @@ Parser.prototype.loadTweets = function(lastOffset)
 
 
 		      var vote = null;
-		      that.options.entries.forEach(function(entry){
+		      options.entries.forEach(function(entry){
 		        if(status.text.indexOf(entry) !== -1) {
 		          vote = entry;
 		        }
