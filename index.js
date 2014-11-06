@@ -130,11 +130,20 @@ Parser.prototype.loadTweets = function(lastOffset)
 
 
 	    		coll.save(tweet, {w : 1}, function(err, res) {
-		    		if (err) throw err;
+		    		if (err) {
+	    				delete tweet.vote;
+	    				delete tweet.username;
+	    				coll.save(tweet, {w : 1}, function(err, res) {
+				    		if (--writesInProgress == 0) {
+					    		self.finaliseRun(db, maxId);
+					    	}
+	    				});
+		    		} else {
 
-		    		if (--writesInProgress == 0) {
-			    		self.finaliseRun(db, maxId);
-			    	}
+			    		if (--writesInProgress == 0) {
+				    		self.finaliseRun(db, maxId);
+				    	}
+				    }
 		    	});
 		    })();
 	    	});
