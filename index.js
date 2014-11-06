@@ -111,7 +111,7 @@ Parser.prototype.loadTweets = function(lastOffset)
             _id : status.id_str,
 	    			id_str: status.id_str,
             created_at : parseTwitterDate(status.created_at),
-	    			username : u.name,
+	    			username : u.screen_name,
             text : status.text,
             vote: vote,
 	    			user : {
@@ -134,7 +134,7 @@ Parser.prototype.loadTweets = function(lastOffset)
 	    				delete tweet.vote;
 	    				delete tweet.username;
 	    				coll.save(tweet, {w : 1}, function(err, res) {
-				    		if (--writesInProgress == 0) {
+					    		if (--writesInProgress == 0) {
 					    		self.finaliseRun(db, maxId);
 					    	}
 	    				});
