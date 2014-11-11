@@ -48,7 +48,8 @@ Parser.prototype.start = function(db)
 		res.toArray(function(err, res) {
 			if (err) throw err;
 
-			var lastOffset = res.length ? res[0].value : 0;
+			//var lastOffset = res.length ? res[0].value : 0;
+			var lastOffset = 0;
 
 			setImmediate(function() {
 				self.loadTweets(lastOffset);
